@@ -13,6 +13,7 @@ public class Q1 {
       t = temp;
     }
     int count = 0;
+    sc.close();
     for (int i = b - 1; i < t; i++) {
       int S = 0;
 

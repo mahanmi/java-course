@@ -14,7 +14,7 @@ public class Q1 {
     }
     int count = 0;
     sc.close();
-    for (int i = b - 1; i < t; i++) {
+    for (int i = b - 1; i < t && i < n; i++) {
       int S = 0;
 
       while (cityArray[i] == 'S' && i < t) {

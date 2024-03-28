@@ -39,36 +39,25 @@ public class Q4 {
       return false;
     }
 
-    if (i - 1 >= 0 && Array[i - 1][j] != 1) { // up
-      Array[i][j] = 1;
-      count++;
-      if (!navigate(Array, i - 1, j)) {
-        count--;
-        Array[i][j] = 0;
+    for (int x = -1; x <= 1; x += 2) { // up and down
+      if (i + x < row && i + x >= 0 && Array[i + x][j] != 1) {
+        Array[i][j] = 1;
+        count++;
+        if (!navigate(Array, i + x, j)) {
+          count--;
+          Array[i][j] = 0;
+        }
       }
     }
-    if (i + 1 < row && Array[i + 1][j] != 1) { // down
-      Array[i][j] = 1;
-      count++;
-      if (!navigate(Array, i + 1, j)) {
-        count--;
-        Array[i][j] = 0;
-      }
-    }
-    if (j - 1 >= 0 && Array[i][j - 1] != 1) { // left
-      Array[i][j] = 1;
-      count++;
-      if (!navigate(Array, i, j - 1)) {
-        count--;
-        Array[i][j] = 0;
-      }
-    }
-    if (j + 1 < col && Array[i][j + 1] != 1) { // right
-      Array[i][j] = 1;
-      count++;
-      if (!navigate(Array, i, j + 1)) {
-        count--;
-        Array[i][j] = 0;
+
+    for (int y = -1; y <= 1; y += 2) { // left and right
+      if (j + y < col && j + y >= 0 && Array[i][j + y] != 1) {
+        Array[i][j] = 1;
+        count++;
+        if (!navigate(Array, i, j + y)) {
+          count--;
+          Array[i][j] = 0;
+        }
       }
     }
 

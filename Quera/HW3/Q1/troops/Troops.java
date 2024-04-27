@@ -7,7 +7,7 @@ public abstract class Troops {
   }
 
   protected TERRAIN place;
-  protected int number;
+  protected int amount;
   protected int forestScore;
   protected int plainScore;
   protected int hillScore;
@@ -16,20 +16,24 @@ public abstract class Troops {
   public int getScore() {
     switch (place) {
       case FOREST:
-        return number * forestScore;
+        return amount * forestScore;
 
       case PLAIN:
-        return number * plainScore;
+        return amount * plainScore;
 
       case HILL:
-        return number * hillScore;
+        return amount * hillScore;
 
       case MOUNTAIN:
-        return number * mountainScore;
+        return amount * mountainScore;
 
       default:
         return 0;
     }
+  }
+
+  public int getAmount() {
+    return amount;
   }
 
 }

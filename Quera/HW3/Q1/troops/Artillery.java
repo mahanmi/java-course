@@ -2,8 +2,8 @@ package troops;
 
 public class Artillery extends Troops {
 
-  public Artillery(int number) {
-    this.number = number;
+  public Artillery(int amount) {
+    this.amount = amount;
     this.forestScore = 2;
     this.plainScore = 1;
     this.hillScore = 1;

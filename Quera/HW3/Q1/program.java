@@ -123,7 +123,7 @@ public class program {
       return;
     } else {
       for (Country c : countries) {
-        if (c.getName().equals(country)) {
+        if (c.getName().toLowerCase().equals(country.toLowerCase())) {
           for (Corp co : c.getCorps()) {
             if (co.getNumber().equals(number)) {
               System.out.println("this country already has this corps!");
@@ -158,7 +158,7 @@ public class program {
     Army army = new Army(number, leader);
 
     for (Country c : countries) {
-      if (c.getName().equals(country)) {
+      if (c.getName().toLowerCase().equals(country.toLowerCase())) {
         if (number != -1) {
           for (Army a : c.getArmies()) {
             if (a.getNumber() == number) {
@@ -197,7 +197,7 @@ public class program {
     Army army = new Army(number, leader, place);
 
     for (Country c : countries) {
-      if (c.getName().equals(country)) {
+      if (c.getName().toLowerCase().equals(country.toLowerCase())) {
         if (number != -1) {
           for (Army a : c.getArmies()) {
             if (a.getNumber() == number) {
@@ -222,7 +222,7 @@ public class program {
     TERRAIN terrain = TERRAIN.valueOf(matcher.group("place"));
 
     for (Country c : countries) {
-      if (c.getName().equals(country)) {
+      if (c.getName().toLowerCase().equals(country.toLowerCase())) {
         for (Army a : c.getArmies()) {
           if (a.getNumber() == number) {
             a.setPlace(terrain);
@@ -243,7 +243,7 @@ public class program {
     String corpsNumber = matcher.group("corpsNumber");
 
     for (Country c : countries) {
-      if (c.getName().equals(country)) {
+      if (c.getName().toLowerCase().equals(country.toLowerCase())) {
         for (Army a : c.getArmies()) {
           if (a.getNumber() == armyNumber) {
             for (Corp co : c.getCorps()) {
@@ -258,7 +258,7 @@ public class program {
                   return;
                 }
                 for (int i = 0; i < a.getCorps().size(); i++) {
-                  if (co.getIntNumber() > a.getCorps().get(i).getIntNumber()) {
+                  if (co.getIntNumber() < a.getCorps().get(i).getIntNumber()) {
                     a.addCorp(i, co);
                     System.out.println("corps added to army successfully!");
                     return;
@@ -285,7 +285,7 @@ public class program {
     int armyNumber = matcher.group("number").matches("\\d+") ? Integer.parseInt(matcher.group("number")) : -1;
 
     for (Country c : countries) {
-      if (c.getName().equals(country)) {
+      if (c.getName().toLowerCase().equals(country.toLowerCase())) {
         for (Army a : c.getArmies()) {
           if (a.getNumber() == armyNumber) {
             System.out.println(a.getLeader() + " " + a.getCorps().size());
@@ -304,15 +304,16 @@ public class program {
     int armyNumber = matcher.group("number").matches("\\d+") ? Integer.parseInt(matcher.group("number")) : -1;
 
     for (Country c : countries) {
-      if (c.getName().equals(country)) {
+      if (c.getName().toLowerCase().equals(country.toLowerCase())) {
         for (Army a : c.getArmies()) {
           if (a.getNumber() == armyNumber) {
             System.out.println(a.getLeader() + " " + a.getCorps().size());
             for (int i = 0; i < a.getCorps().size() && i < 3; i++) {
               System.out.println(
-                  "\t" + a.getCorps().get(i).getInfantry() + " " + a.getCorps().get(i).getCavalry() + " "
-                      + a.getCorps().get(i).getArtillery() + " " + a.getCorps().get(i).getOfficer() + " "
-                      + a.getCorps().get(i).getScore(a.getPlace()));
+                  "    " + a.getCorps().get(i).getInfantry() + " " + a.getCorps().get(i).getCavalry() + " "
+                      + a.getCorps().get(i).getArtillery() + " "
+                      + a.getCorps().get(i).getOfficer().toString().toLowerCase() + " "
+                      + a.getCorps().get(i).getTotal());
             }
             return;
           }
@@ -327,7 +328,7 @@ public class program {
   private void printCountry(Matcher matcher) {
     String country = matcher.group("country");
     for (Country c : countries) {
-      if (c.getName().equals(country)) {
+      if (c.getName().toLowerCase().equals(country.toLowerCase())) {
         System.out.print(c.getNationality());
         System.out.print(" " + c.getArmies().size());
         for (Army a : c.getArmies()) {
@@ -343,7 +344,7 @@ public class program {
   private void printCountryDetails(Matcher matcher) {
     String country = matcher.group("country");
     for (Country c : countries) {
-      if (c.getName().equals(country)) {
+      if (c.getName().toLowerCase().equals(country.toLowerCase())) {
         System.out.print(c.getNationality());
         System.out.print(" " + c.getArmies().size());
         for (Army a : c.getArmies()) {
@@ -367,7 +368,7 @@ public class program {
     String corpsNumber = matcher.group("corpsNumber");
 
     for (Country c : countries) {
-      if (c.getName().equals(country)) {
+      if (c.getName().toLowerCase().equals(country.toLowerCase())) {
         for (Army a : c.getArmies()) {
           if (a.getNumber() == armyNumber) {
             for (Corp co : a.getCorps()) {
@@ -398,7 +399,7 @@ public class program {
     int armyNumber = matcher.group("armyNumber").matches("\\d+") ? Integer.parseInt(matcher.group("armyNumber")) : -1;
 
     for (Country c : countries) {
-      if (c.getName().equals(country)) {
+      if (c.getName().toLowerCase().equals(country.toLowerCase())) {
         for (Army a : c.getArmies()) {
           if (a.getNumber() == armyNumber) {
             System.out.println(a.getScore());
@@ -416,7 +417,7 @@ public class program {
     String country = matcher.group("country");
 
     for (Country c : countries) {
-      if (c.getName().equals(country)) {
+      if (c.getName().toLowerCase().equals(country.toLowerCase())) {
         System.out.println(c.getScore());
         return;
       }
@@ -426,13 +427,13 @@ public class program {
 
   private boolean canUnion(String country1, String country2) {
     for (Country c1 : countries) {
-      if (c1.getName().equals(country1)) {
+      if (c1.getName().toLowerCase().equals(country1.toLowerCase())) {
         for (String country : c1.getAllies()) {
           if (country.equals(country2)) {
             return false;
           }
           for (Country c : countries) {
-            if (c.getName().equals(country)) {
+            if (c.getName().toLowerCase().equals(country.toLowerCase())) {
               for (String ca : c.getEnemies()) {
                 if (ca.equals(country2)) {
                   return false;
@@ -460,7 +461,7 @@ public class program {
     boolean found = false;
 
     for (Country c2 : countries) {
-      if (c2.getName().equals(country2)) {
+      if (c2.getName().toLowerCase().equals(country2.toLowerCase())) {
         found = true;
       }
     }
@@ -471,14 +472,14 @@ public class program {
     }
 
     for (Country c1 : countries) {
-      if (c1.getName().equals(country1)) {
+      if (c1.getName().toLowerCase().equals(country1.toLowerCase())) {
         if (!canUnion(country1, country2)) {
           System.out.println("something went wrong!");
           return;
         }
         c1.addAlly(country2);
         for (Country c : countries) {
-          if (c.getName().equals(country2)) {
+          if (c.getName().toLowerCase().equals(country2.toLowerCase())) {
             c.addAlly(country1);
             System.out.println("unionized successfully!");
             return;
@@ -496,7 +497,7 @@ public class program {
     for (String country : newAllies) {
       boolean isFound = false;
       for (Country c : countries) {
-        if (c.getName().equals(country)) {
+        if (c.getName().toLowerCase().equals(country.toLowerCase())) {
           isFound = true;
           break;
         }
@@ -508,7 +509,7 @@ public class program {
     }
 
     for (Country c1 : countries) {
-      if (c1.getName().equals(country1)) {
+      if (c1.getName().toLowerCase().equals(country1.toLowerCase())) {
         for (String country : newAllies) {
           if (!canUnion(country1, country)) {
             System.out.println("something went wrong!");
@@ -518,7 +519,7 @@ public class program {
         for (String country : newAllies) {
           c1.addAlly(country);
           for (Country c : countries) {
-            if (c.getName().equals(country)) {
+            if (c.getName().toLowerCase().equals(country.toLowerCase())) {
               c.addAlly(country1);
             }
           }
@@ -533,15 +534,15 @@ public class program {
 
   private boolean canMadeEnemy(String country1, String country2) {
     for (Country c1 : countries) {
-      if (c1.getName().equals(country1)) {
+      if (c1.getName().toLowerCase().equals(country1.toLowerCase())) {
         for (String country : c1.getAllies()) {
-          if (country.equals(country2)) {
+          if (country.toLowerCase().equals(country2.toLowerCase())) {
             return false;
           }
           for (Country c : countries) {
-            if (c.getName().equals(country)) {
+            if (c.getName().toLowerCase().equals(country.toLowerCase())) {
               for (String ca : c.getAllies()) {
-                if (ca.equals(country2)) {
+                if (ca.toLowerCase().equals(country2.toLowerCase())) {
                   return false;
                 }
               }
@@ -549,7 +550,7 @@ public class program {
           }
         }
         for (String country : c1.getEnemies()) {
-          if (country.equals(country2)) {
+          if (country.toLowerCase().equals(country2.toLowerCase())) {
             return false;
           }
 
@@ -567,7 +568,7 @@ public class program {
     boolean found = false;
 
     for (Country c2 : countries) {
-      if (c2.getName().equals(country2)) {
+      if (c2.getName().toLowerCase().equals(country2.toLowerCase())) {
         found = true;
       }
     }
@@ -578,14 +579,14 @@ public class program {
     }
 
     for (Country c1 : countries) {
-      if (c1.getName().equals(country1)) {
+      if (c1.getName().toLowerCase().equals(country1.toLowerCase())) {
         if (!canMadeEnemy(country1, country2)) {
           System.out.println("something went wrong!");
           return;
         }
         c1.addEnemy(country2);
         for (Country c : countries) {
-          if (c.getName().equals(country2)) {
+          if (c.getName().toLowerCase().equals(country2.toLowerCase())) {
             c.addEnemy(country1);
           }
         }
@@ -598,7 +599,7 @@ public class program {
 
   private int getCountryScore(String country) {
     for (Country c : countries) {
-      if (c.getName().equals(country)) {
+      if (c.getName().toLowerCase().equals(country.toLowerCase())) {
         return c.getScore();
       }
     }
@@ -611,7 +612,7 @@ public class program {
     ArrayList<String> sortedAllies = new ArrayList<String>();
 
     for (Country c : countries) {
-      if (c.getName().equals(country)) {
+      if (c.getName().toLowerCase().equals(country.toLowerCase())) {
         for (String ally : c.getAllies()) {
           if (sortedAllies.isEmpty()) {
             sortedAllies.add(ally);
@@ -644,7 +645,7 @@ public class program {
     ArrayList<String> sortedEnemies = new ArrayList<String>();
 
     for (Country c : countries) {
-      if (c.getName().equals(country)) {
+      if (c.getName().toLowerCase().equals(country.toLowerCase())) {
         for (String enemy : c.getEnemies()) {
           if (sortedEnemies.isEmpty()) {
             sortedEnemies.add(enemy);
@@ -676,9 +677,9 @@ public class program {
     String country2 = matcher.group("country2");
 
     for (Country c1 : countries) {
-      if (c1.getName().equals(country1)) {
+      if (c1.getName().toLowerCase().equals(country1.toLowerCase())) {
         for (Country c2 : countries) {
-          if (c2.getName().equals(country2)) {
+          if (c2.getName().toLowerCase().equals(country2.toLowerCase())) {
             if (c1.getScore() > c2.getScore()) {
               c2.lostWar();
               System.out.println(country1);
@@ -703,9 +704,9 @@ public class program {
     TERRAIN place = TERRAIN.valueOf(matcher.group("place"));
 
     for (Country c1 : countries) {
-      if (c1.getName().equals(country1)) {
+      if (c1.getName().toLowerCase().equals(country1.toLowerCase())) {
         for (Country c2 : countries) {
-          if (c2.getName().equals(country2)) {
+          if (c2.getName().toLowerCase().equals(country2.toLowerCase())) {
             if (c1.getScore(place) > c2.getScore(place)) {
               c2.lostWar();
               System.out.println(country1);

@@ -18,7 +18,7 @@ public class Corp {
   }
 
   public int getTotal() {
-    return artillery + cavalry + infantry + 1; // 1 officer
+    return artillery + cavalry + infantry ; 
   }
 
   public String getNumber() {
@@ -53,20 +53,20 @@ public class Corp {
   }
 
   public int getArtillery() {
-    return artillery;
+    return artillery / 10;
   }
 
   public int getCavalry() {
-    return cavalry;
+    return cavalry / 400;
   }
 
   public int getInfantry() {
-    return infantry;
+    return infantry / 1000;
   }
 
   public int getScore(TERRAIN place) {
     return place.artillery * artillery + place.cavalry * cavalry + place.infantry * infantry + officer.getScore()
-        + getTotal() - 1;
+        + getTotal();
   }
 
   public Officer getOfficer() {

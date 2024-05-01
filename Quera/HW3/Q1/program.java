@@ -55,12 +55,12 @@ public class program {
       } else if (input.matches(Command.PRINT_COUNTRY_SCORE.regex)) {
         matcher = getCommandMatcher(input, Command.PRINT_COUNTRY_SCORE.regex);
         printCountryScore(matcher);
-      } else if (input.matches(Command.UNION.regex)) {
-        matcher = getCommandMatcher(input, Command.UNION.regex);
-        union(matcher);
       } else if (input.matches(Command.UNION_COUNTRIES.regex)) {
         matcher = getCommandMatcher(input, Command.UNION_COUNTRIES.regex);
         unionCountries(matcher);
+      } else if (input.matches(Command.UNION.regex)) {
+        matcher = getCommandMatcher(input, Command.UNION.regex);
+        union(matcher);
       } else if (input.matches(Command.MADE_ENEMY.regex)) {
         matcher = getCommandMatcher(input, Command.MADE_ENEMY.regex);
         madeEnemy(matcher);
@@ -443,7 +443,7 @@ public class program {
           }
         }
         for (String country : c1.getEnemies()) {
-          if (country.equals(country2)) {
+          if (country.toLowerCase().equals(country2.toLowerCase())) {
             return false;
           }
         }
@@ -463,6 +463,7 @@ public class program {
     for (Country c2 : countries) {
       if (c2.getName().toLowerCase().equals(country2.toLowerCase())) {
         found = true;
+        break;
       }
     }
 
@@ -492,7 +493,11 @@ public class program {
 
   private void unionCountries(Matcher matcher) {
     String country1 = matcher.group("country1");
-    String[] newAllies = matcher.group("listOfCountries").replaceAll("\\'", "").split(",");
+    String[] newAllies = matcher.group("listOfCountries").split("\\,");
+
+    for (int i = 0; i < newAllies.length; i++) {
+      newAllies[i] = newAllies[i].substring(1, newAllies[i].length() - 1);
+    }
 
     for (String country : newAllies) {
       boolean isFound = false;
@@ -510,10 +515,16 @@ public class program {
 
     for (Country c1 : countries) {
       if (c1.getName().toLowerCase().equals(country1.toLowerCase())) {
-        for (String country : newAllies) {
-          if (!canUnion(country1, country)) {
+        for (int j = 0; j < newAllies.length; j++) {
+          if (!canUnion(country1, newAllies[j])) {
             System.out.println("something went wrong!");
             return;
+          }
+          for (int i = 0; i < newAllies.length; i++) {
+            if (!canUnion(newAllies[i], newAllies[j])) {
+              System.out.println("something went wrong!");
+              return;
+            }
           }
         }
         for (String country : newAllies) {

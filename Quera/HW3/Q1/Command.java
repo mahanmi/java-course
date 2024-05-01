@@ -15,7 +15,7 @@ public enum Command {
     PRINT_ARMY_SCORE("^print score of (?<country>\\S+) (?<armyNumber>\\S+)$"),
     PRINT_COUNTRY_SCORE("^print score of (?<country>\\S+)$"),
     UNION("^(?<country1>\\S+) join union with (?<country2>\\S+)$"),
-    UNION_COUNTRIES("^(?<country1>\\S+) join union with \\[(?<listOfCountries>\\S+)\\]$"),
+    UNION_COUNTRIES("^(?<country1>\\S+) join union with \\[(?<listOfCountries>.*)\\]$"),
     MADE_ENEMY("^(?<country1>\\S+) made enemy of (?<country2>\\S+)$"),
     SHOW_ALLIES("^show friends of (?<country>\\S+)$"),
     SHOW_ENEMIES("^show enemies of (?<country>\\S+)$"),

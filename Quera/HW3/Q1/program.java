@@ -474,7 +474,7 @@ public class program {
 
     for (Country c1 : countries) {
       if (c1.getName().toLowerCase().equals(country1.toLowerCase())) {
-        if (!canUnion(country1, country2)) {
+        if (!canUnion(country1, country2) || !canUnion(country2, country1)) {
           System.out.println("something went wrong!");
           return;
         }
@@ -516,12 +516,12 @@ public class program {
     for (Country c1 : countries) {
       if (c1.getName().toLowerCase().equals(country1.toLowerCase())) {
         for (int j = 0; j < newAllies.length; j++) {
-          if (!canUnion(country1, newAllies[j])) {
+          if (!canUnion(country1, newAllies[j]) || !canUnion(newAllies[j], country1)) {
             System.out.println("something went wrong!");
             return;
           }
           for (int i = 0; i < newAllies.length; i++) {
-            if (!canUnion(newAllies[i], newAllies[j])) {
+            if (!canUnion(newAllies[i], newAllies[j]) || !canUnion(newAllies[j], newAllies[i])) {
               System.out.println("something went wrong!");
               return;
             }
@@ -532,6 +532,10 @@ public class program {
           for (Country c : countries) {
             if (c.getName().toLowerCase().equals(country.toLowerCase())) {
               c.addAlly(country1);
+              for (String ally : newAllies) {
+                if (!ally.equals(country))
+                  c.addAlly(ally);
+              }
             }
           }
         }
@@ -591,7 +595,7 @@ public class program {
 
     for (Country c1 : countries) {
       if (c1.getName().toLowerCase().equals(country1.toLowerCase())) {
-        if (!canMadeEnemy(country1, country2)) {
+        if (!canMadeEnemy(country1, country2) || !canMadeEnemy(country2, country1)) {
           System.out.println("something went wrong!");
           return;
         }

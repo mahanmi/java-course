@@ -5,7 +5,7 @@ public class Studio {
   private String capacity;
   private String address;
 
-  Studio(String ID,String name,String year,String capacity,String address){
+  Studio(String ID, String name, String year, String capacity, String address) {
     this.ID = ID;
     this.name = name;
     this.year = year;
@@ -13,7 +13,23 @@ public class Studio {
     this.address = address;
   }
 
-  public String getID(){
+  public String getID() {
     return ID;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getYear() {
+    return year;
+  }
+
+  public String getCapacity() {
+    return capacity;
+  }
+
+  public String getAddress() {
+    return address;
   }
 }

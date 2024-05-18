@@ -1,6 +1,10 @@
 package Artworks;
 
-class Painting extends Artwork {
+import java.util.ArrayList;
+
+public class Painting extends Artwork {
+
+  ArrayList<Borrower> Borrowers = new ArrayList<Borrower>();
 
   private String investor;
   private int copyNumber;
@@ -18,6 +22,18 @@ class Painting extends Artwork {
 
   public int getCopyNumber() {
     return copyNumber;
+  }
+
+  public ArrayList<Borrower> getBorrowers() {
+    return Borrowers;
+  }
+
+  public void addBorrower(Borrower borrower) {
+    Borrowers.add(borrower);
+  }
+
+  public void removeBorrower(Borrower borrower) {
+    Borrowers.remove(borrower);
   }
 
 }

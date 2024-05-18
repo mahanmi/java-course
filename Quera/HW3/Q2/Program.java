@@ -2,10 +2,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.*;
 
-import Users.Customer;
-import Users.Manager;
-import Users.Staff;
-import Users.User;
+import Users.*;
+import Artworks.*;
 
 public class Program {
   Scanner scanner = new Scanner(System.in);
@@ -38,6 +36,24 @@ public class Program {
       } else if (input.matches(Commands.REMOVE_USER.regex)) {
         matcher = getCommandMatcher(input, Commands.REMOVE_USER.regex);
         removeUser(matcher);
+      } else if (input.matches(Commands.ADD_PAINTING.regex)) {
+        matcher = getCommandMatcher(input, Commands.ADD_PAINTING.regex);
+        addPainting(matcher);
+      } else if (input.matches(Commands.ADD_STATUE.regex)) {
+        matcher = getCommandMatcher(input, Commands.ADD_STATUE.regex);
+        addStatue(matcher);
+      } else if (input.matches(Commands.ADD_WORTHY.regex)) {
+        matcher = getCommandMatcher(input, Commands.ADD_WORTHY.regex);
+        addWorthy(matcher);
+      } else if (input.matches(Commands.ADD_SELLING.regex)) {
+        matcher = getCommandMatcher(input, Commands.ADD_SELLING.regex);
+        addSelling(matcher);
+      } else if (input.matches(Commands.REMOVE_ARTWORK.regex)) {
+        matcher = getCommandMatcher(input, Commands.REMOVE_ARTWORK.regex);
+        removeArtwork(matcher);
+      } else if (input.matches(Commands.BORROW.regex)) {
+        matcher = getCommandMatcher(input, Commands.BORROW.regex);
+        borrow(matcher);
       } else {
         System.out.println("invalid-command");
       }
@@ -116,8 +132,14 @@ public class Program {
     return null;
   }
 
-  Category getCategory(String ID) {
-    for (Category category : categories) {
+  Category getCategory(String ID, ArrayList<Category> categoriesArrayList) {
+    for (Category category : categoriesArrayList) {
+      if (category.getSubCategories().size() > 0) {
+        Category c = getCategory(ID, category.getSubCategories());
+        if (c != null) {
+          return c;
+        }
+      }
       if (category.getID().equals(ID)) {
         return category;
       }
@@ -125,16 +147,55 @@ public class Program {
     return null;
   }
 
-  boolean isAdmin(User user) {
-    if (user.getPermission().equals("admin"))
-      return true;
+  Artwork getArtwork(String ID, String studioID) {
+    Studio studio = getStudio(studioID);
+    if (studio == null) {
+      return null;
+    }
+    for (Artwork artwork : studio.getArtworks()) {
+      if (artwork.getID().equals(ID)) {
+        return artwork;
+      }
+    }
+    return null;
+  }
 
-    return false;
+  Painting getPainting(String ID, String studioID) {
+    Studio studio = getStudio(studioID);
+    if (studio == null) {
+      return null;
+    }
+    for (Artwork artwork : studio.getArtworks()) {
+      if (artwork instanceof Painting) {
+        Painting painting = (Painting) artwork;
+        if (painting.getID().equals(ID)) {
+          return painting;
+        }
+      }
+    }
+    return null;
+  }
+
+  Statue getStatue(String ID, String studioID) {
+    Studio studio = getStudio(studioID);
+    if (studio == null) {
+      return null;
+    }
+    for (Artwork artwork : studio.getArtworks()) {
+      if (artwork instanceof Statue) {
+        Statue statue = (Statue) artwork;
+        if (statue.getID().equals(ID)) {
+          return statue;
+        }
+      }
+    }
+    return null;
   }
 
   void addStudio(Matcher matcher) {
     String username = matcher.group("username");
     String password = matcher.group("password");
+    User user = getUser(username);
 
     String ID = matcher.group("studioID");
     String name = matcher.group("studioName");
@@ -142,29 +203,29 @@ public class Program {
     String capacity = matcher.group("capacity");
     String address = matcher.group("address");
 
-    User user = getUser(username);
-
     if (getStudio(ID) != null) {
       System.out.println("duplicate-id");
       return;
     }
 
-    if (!isAdmin(user)) {
+    if (user == null) {
+      System.out.println("not-found");
+      return;
+    }
+
+    if (!user.getPermission().equals("admin")) {
       System.out.println("permission-denied");
       return;
     }
 
-    if (user.getUsername().equals(username)) {
-      if (user.getPassword().equals(password)) {
-        studios.add(new Studio(ID, name, year, capacity, address));
-        System.out.println("success");
-        return;
-      }
-      System.out.println("invalid-pass");
+    if (user.getPassword().equals(password)) {
+      studios.add(new Studio(ID, name, year, capacity, address));
+      System.out.println("success");
       return;
     }
-    System.out.println("not-found");
+    System.out.println("invalid-pass");
     return;
+
   }
 
   private void addCategory(Matcher matcher) {
@@ -175,9 +236,9 @@ public class Program {
     String ID = matcher.group("categoryID");
     String name = matcher.group("categoryName");
     String superCategory = matcher.group("superCategory");
-    Category supCategory = (superCategory.equals("null")) ? null : getCategory(superCategory);
+    Category supCategory = (superCategory.equals("null")) ? null : getCategory(superCategory, categories);
 
-    if (getCategory(name) != null) {
+    if (getCategory(name, categories) != null) {
       System.out.println("duplicate-id");
       return;
     }
@@ -187,7 +248,7 @@ public class Program {
       return;
     }
 
-    if (!isAdmin(user)) {
+    if (!user.getPermission().equals("admin")) {
       System.out.println("permission-denied");
       return;
     }
@@ -357,6 +418,281 @@ public class Program {
       return;
     }
 
+    System.out.println("invalid-pass");
+  }
+
+  private void addPainting(Matcher matcher) {
+    String managerID = matcher.group("managerID");
+    String password = matcher.group("password");
+    Manager user = getManager(managerID);
+
+    String ID = matcher.group("ID");
+    String name = matcher.group("name");
+    String painter = matcher.group("painter");
+    String investor = matcher.group("investor");
+    String date = matcher.group("date");
+    int copyNumber = Integer.valueOf(matcher.group("copyNumber"));
+    String categoryID = matcher.group("categoryID");
+    String studioID = matcher.group("studioID");
+
+    if (getArtwork(ID, studioID) != null) {
+      System.out.println("duplicate-id");
+      return;
+    }
+
+    if (user == null || getStudio(studioID) == null || getCategory(categoryID, categories) == null) {
+      System.out.println("not-found");
+      return;
+    }
+
+    if (user.getPermission().equals("manager") & user.getStudioID().equals(studioID)) {
+      if (user.getPassword().equals(password)) {
+        getStudio(studioID)
+            .addArtwork(new Painting(ID, name, painter, investor, date, copyNumber, categoryID, studioID));
+        System.out.println("success");
+        return;
+      }
+      System.out.println("invalid-pass");
+      return;
+    }
+    System.out.println("permission-defied");
+
+  }
+
+  private void addStatue(Matcher matcher) {
+    String managerID = matcher.group("managerID");
+    String password = matcher.group("password");
+    Manager user = getManager(managerID);
+
+    String ID = matcher.group("ID");
+    String name = matcher.group("name");
+    String sculptor = matcher.group("sculptor");
+    String professorName = matcher.group("professorName");
+    String date = matcher.group("date");
+    String category = matcher.group("category");
+    String studioID = matcher.group("studioID");
+
+    if (getArtwork(ID, studioID) != null) {
+      System.out.println("duplicate-id");
+      return;
+    }
+
+    if (user == null || getStudio(studioID) == null
+        || (getCategory(category, categories) == null && !category.equals("null"))) {
+      System.out.println("not-found");
+      return;
+    }
+
+    if (user.getPermission().equals("manager") & user.getStudioID().equals(studioID)) {
+      if (user.getPassword().equals(password)) {
+        getStudio(studioID)
+            .addArtwork(new Statue(ID, name, sculptor, professorName, date, category, studioID));
+        System.out.println("success");
+        return;
+      }
+      System.out.println("invalid-pass");
+      return;
+    }
+    System.out.println("permission-defied");
+  }
+
+  private void addWorthy(Matcher matcher) {
+    String managerID = matcher.group("managerID");
+    String password = matcher.group("password");
+    Manager user = getManager(managerID);
+
+    String ID = matcher.group("ID");
+    String name = matcher.group("name");
+    String painter = matcher.group("painter");
+    String printer = matcher.group("printer");
+    String date = matcher.group("date");
+    String donator = matcher.group("donator");
+    String categoryID = matcher.group("categoryID");
+    String studioID = matcher.group("studioID");
+
+    if (getArtwork(ID, studioID) != null) {
+      System.out.println("duplicate-id");
+      return;
+    }
+
+    if (user == null || getStudio(studioID) == null || getCategory(categoryID, categories) == null) {
+      System.out.println("not-found");
+      return;
+    }
+
+    if (user.getPermission().equals("manager") & user.getStudioID().equals(studioID)) {
+      if (user.getPassword().equals(password)) {
+        getStudio(studioID)
+            .addArtwork(new Worthy(ID, name, painter, printer, date, donator, categoryID, studioID));
+        System.out.println("success");
+        return;
+      }
+      System.out.println("invalid-pass");
+      return;
+    }
+    System.out.println("permission-defied");
+  }
+
+  private void addSelling(Matcher matcher) {
+    String managerID = matcher.group("managerID");
+    String password = matcher.group("password");
+    Manager user = getManager(managerID);
+
+    String ID = matcher.group("ID");
+    String name = matcher.group("name");
+    String painter = matcher.group("painter");
+    String printer = matcher.group("printer");
+    String date = matcher.group("date");
+    int copyNumber = Integer.valueOf(matcher.group("copyNumber"));
+    int price = Integer.valueOf(matcher.group("price"));
+    int discount = Integer.valueOf(matcher.group("discount"));
+    String category = matcher.group("category");
+    String studioID = matcher.group("studioID");
+
+    if (getArtwork(ID, studioID) != null) {
+      System.out.println("duplicate-id");
+      return;
+    }
+
+    if (user == null || getStudio(studioID) == null || getCategory(category, categories) == null) {
+      System.out.println("not-found");
+      return;
+    }
+
+    if (user.getPermission().equals("manager") & user.getStudioID().equals(studioID)) {
+      if (user.getPassword().equals(password)) {
+        getStudio(studioID)
+            .addArtwork(new Selling(ID, name, painter, printer, date, copyNumber, price, discount, category, studioID));
+        System.out.println("success");
+        return;
+      }
+      System.out.println("invalid-pass");
+      return;
+    }
+    System.out.println("permission-defied");
+  }
+
+  private void removeArtwork(Matcher matcher) {
+    String managerID = matcher.group("managerID");
+    String password = matcher.group("password");
+    Manager user = getManager(managerID);
+
+    String ID = matcher.group("ID");
+    String studioID = matcher.group("studioID");
+
+    if (getArtwork(ID, studioID) == null | user == null || getStudio(studioID) == null) {
+      System.out.println("not-found");
+      return;
+    }
+
+    if (user.getPermission().equals("manager") & user.getStudioID().equals(studioID)) {
+      if (user.getPassword().equals(password)) {
+        if (getArtwork(ID, studioID) instanceof Painting) {
+          Painting painting = getPainting(ID, studioID);
+          if (painting.getBorrowers().size() > 0) {
+            System.out.println("not-allowed");
+            return;
+          }
+        }
+        getStudio(studioID).removeArtwork(getArtwork(ID, studioID));
+        System.out.println("success");
+        return;
+      }
+      System.out.println("invalid-pass");
+      return;
+    }
+    System.out.println("permission-defied");
+  }
+
+  private void borrow(Matcher matcher) {
+    String ID = matcher.group("ID");
+    String password = matcher.group("password");
+    String studioID = matcher.group("studioID");
+    String sourceID = matcher.group("sourceID");
+    String date = matcher.group("date");
+    String hour = matcher.group("hour");
+
+    User user = getUser(ID);
+    Customer customer = getCustomer(ID);
+    Painting painting = getPainting(sourceID, studioID);
+    Artwork artwork = getArtwork(sourceID, studioID);
+
+    if (user == null || customer == null || artwork == null || getStudio(studioID) == null) {
+      System.out.println("not-found");
+      return;
+    }
+
+    if (customer.getPassword().equals(password)) {
+      if (!customer.canBorrow(date, hour)) {
+        System.out.println("not-allowed");
+        return;
+      }
+      if (painting.getBorrowers().size() >= painting.getCopyNumber()) {
+        System.out.println("not-allowed");
+        return;
+      }
+      if (!(artwork instanceof Painting)) {
+        System.out.println("not-allowed");
+        return;
+      }
+      customer.borrowArtwork(artwork);
+      customer.addBorrowedResource(new Borrower(ID, date, hour));
+      painting.addBorrower(new Borrower(ID, date, hour));
+      System.out.println("success");
+      return;
+    }
+    System.out.println("invalid-pass");
+  }
+
+  private void returnArtwork(Matcher matcher) {
+    String ID = matcher.group("ID");
+    String password = matcher.group("password");
+    String studioID = matcher.group("studioID");
+    String sourceID = matcher.group("sourceID");
+    String date = matcher.group("date");
+    String hour = matcher.group("hour");
+
+    User user = getUser(ID);
+    Customer customer = getCustomer(ID);
+    Painting painting = getPainting(sourceID, studioID);
+    Artwork artwork = getArtwork(sourceID, studioID);
+
+    if (user == null || customer == null || artwork == null || getStudio(studioID) == null) {
+      System.out.println("not-found");
+      return;
+    }
+
+    if (customer.getPassword().equals(password)) {
+      int out = 0;
+      for (Borrower borrower : painting.getBorrowers()) {
+        if (borrower.getID().equals(ID)) {
+          int passedDays = Integer.valueOf(borrower.getDate()) - Integer.valueOf(date);
+          int passedHours = Integer.valueOf(borrower.getHour()) - Integer.valueOf(hour);
+          if (user instanceof Customer) {
+            if (artwork instanceof Painting && passedDays > 10) {
+              out += ((passedDays - 10) * 24 + passedHours) * 50;
+            } else if (artwork instanceof Statue && passedDays > 7) {
+              out += ((passedDays - 7) * 24 + passedHours) * 50;
+            }
+          } else {
+            if (artwork instanceof Painting && passedDays > 14) {
+              out += ((passedDays - 14) * 24 + passedHours) * 100;
+            } else if (artwork instanceof Statue && passedDays > 10) {
+              out += ((passedDays - 10) * 24 + passedHours) * 100;
+            }
+          }
+          break;
+        }
+
+      }
+      customer.returnArtwork(artwork);
+      customer.removeBorrowedResource(new Borrower(ID, date, hour));
+      painting.removeBorrower(new Borrower(ID, date, hour));
+      System.out.println("success");
+      customer.addDebt(out);
+      System.out.println(out);
+      return;
+    }
     System.out.println("invalid-pass");
   }
 

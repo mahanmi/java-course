@@ -1,4 +1,9 @@
+import java.util.ArrayList;
+import Artworks.*;
+
 public class Studio {
+  ArrayList<Artwork> Artworks = new ArrayList<Artwork>();
+
   private String ID;
   private String name;
   private String year;
@@ -31,5 +36,17 @@ public class Studio {
 
   public String getAddress() {
     return address;
+  }
+
+  public ArrayList<Artwork> getArtworks() {
+    return Artworks;
+  }
+
+  public void addArtwork(Artwork artwork) {
+    Artworks.add(artwork);
+  }
+
+  public void removeArtwork(Artwork artwork) {
+    Artworks.remove(artwork);
   }
 }

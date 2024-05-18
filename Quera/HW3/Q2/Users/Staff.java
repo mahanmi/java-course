@@ -1,4 +1,5 @@
 package Users;
+
 public class Staff extends Customer {
   private String role;
 
@@ -6,6 +7,7 @@ public class Staff extends Customer {
       String IDnumber, String DateOfBirth, String address, String role) {
     super(subscriptionNumber, pPassword, permission, name, surname, IDnumber, DateOfBirth, address);
     this.role = role;
+    setPermission("staff");
   }
 
   public String getRole() {

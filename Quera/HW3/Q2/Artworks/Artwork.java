@@ -40,4 +40,5 @@ public abstract class Artwork {
   public String getStudioID() {
     return studioID;
   }
+
 }

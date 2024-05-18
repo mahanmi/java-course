@@ -6,6 +6,7 @@ public class Manager extends Customer {
       String IDnumber, String DateOfBirth, String address, String studioID) {
     super(subscriptionNumber, pPassword, permission, name, surname, IDnumber, DateOfBirth, address);
     this.studioID = studioID;
+    setPermission("manager");
   }
 
   public String getStudioID() {

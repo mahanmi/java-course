@@ -55,7 +55,15 @@ public class User {
     borrowedArtworks.add(artwork);
   }
 
+  public void returnArtwork(Artwork artwork) {
+    borrowedArtworks.remove(artwork);
+  }
+
   public void buyArtwork(Artwork artwork) {
     boughtArtworks.add(artwork);
+  }
+
+  public void setPermission(String input) {
+    this.permission = input;
   }
 }

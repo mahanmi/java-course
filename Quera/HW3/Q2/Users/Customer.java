@@ -1,12 +1,16 @@
 package Users;
+
+import java.util.ArrayList;
+import Artworks.Borrower;
+
 public class Customer extends User {
+  private ArrayList<Borrower> borrowedResources = new ArrayList<Borrower>();
+
   private String name;
   private String surname;
   private String IDnumber;
   private String DateOfBirth;
   private String address;
-
-  
 
   public Customer(String subscriptionNumber, String password, String permission, String name, String surname,
       String IDnumber, String DateOfBirth, String address) {
@@ -16,6 +20,7 @@ public class Customer extends User {
     this.IDnumber = IDnumber;
     this.DateOfBirth = DateOfBirth;
     this.address = address;
+    setPermission("customer");
   }
 
   public String getName() {
@@ -38,6 +43,18 @@ public class Customer extends User {
     return address;
   }
 
+  public ArrayList<Borrower> getBorrowedResources() {
+    return borrowedResources;
+  }
+
+  public void addBorrowedResource(Borrower borrowedResource) {
+    borrowedResources.add(borrowedResource);
+  }
+
+  public void removeBorrowedResource(Borrower borrowedResource) {
+    borrowedResources.remove(borrowedResource);
+  }
+
   public void setName(String name) {
     this.name = name;
   }
@@ -56,6 +73,21 @@ public class Customer extends User {
 
   public void setAddress(String address) {
     this.address = address;
+  }
+
+  public boolean canBorrow(String date, String hour) {
+    if (borrowedResources.size() >= 3) {
+      return false;
+    }
+
+    for (Borrower borrower : borrowedResources) {
+      if (Integer.parseInt(borrower.getDate()) < Integer.parseInt(date)
+          && Integer.parseInt(borrower.getHour()) < Integer.parseInt(hour)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
 }
